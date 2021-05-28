@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"github.com/go-playground/validator/v10"
 	"github.com/tm8619/gRPC-vs-REST/gRPC/service"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -11,32 +10,31 @@ import (
 )
 
 const (
-	port = ":8081"
+	port = ":8083"
 )
-
-var validate = validator.New()
 
 type server struct {
 	service.UnimplementedGRPCServer
 }
 
-func (s *server) GetNumbers(ctx context.Context, in *service.GetNumbersInput) (out *service.GetNumbersOutput, e error) {
+func (s *server) GetNumbers(ctx context.Context, in *service.GetNumbersInput) (*service.GetNumbersOutput, error) {
 	if in == nil {
-		e = errors.New("invalid input")
-		return
+		e := errors.New("invalid input")
+		return nil, e
 	}
 
 	if in.To < in.From || in.To-in.From > 10000000 {
-		e = errors.New("invalid input")
-		return
+		e := errors.New("invalid input")
+		return nil, e
 	}
 
+	out := service.GetNumbersOutput{}
 	out.Numbers = []int64{}
 	for i := in.From; i <= in.To; i++ {
 		out.Numbers = append(out.Numbers, i)
 	}
 
-	return
+	return &out, nil
 }
 
 func main() {
