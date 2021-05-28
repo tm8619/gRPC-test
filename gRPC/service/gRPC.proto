@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package grpc;
+option go_package = "./;grpc";
+
+message GetNumbersInput {
+  int64 from = 1;
+  int64 to = 2;
+}
+
+message GetNumbersOutput {
+  repeated int64 numbers = 1;
+}
+
+service GRPC{
+  rpc GetNumbers (GetNumbersInput) returns (GetNumbersOutput);
+}
